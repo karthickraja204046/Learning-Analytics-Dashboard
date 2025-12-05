@@ -115,7 +115,7 @@
 
 // export default Chart
 
-import React from 'react'
+import React, { useState,useEffect } from 'react'
 import ReactECharts from 'echarts-for-react';
 import Ranking from './Ranking'
 import MainDashboard from './MainDashboard';
@@ -124,9 +124,17 @@ import LearnersChart from './LearnersChart';
 import PassPercentageChart from './PassPercentageChart';
 import DistrictRankingChart from './DistrictRankingChart';
 import { useTheme } from './ThemeProvider';  
+import { data2024,data2025 } from './LocalData';
 
 const Chart = () => {
   const { darkMode } = useTheme(); 
+  const [districtProgessstate,setDistrictProgressState] = useState([])
+  useEffect(()=>{
+    PopulateDashBoardData();
+  },[])
+  const PopulateDashBoardData = () => {
+    setDistrictProgressState(data2024.courseProgress)
+  } 
 
   const textColor = darkMode ? '#fff' : '#000';
   const bgColor = darkMode ? '#000' : '#ffffff';  
@@ -162,11 +170,7 @@ const Chart = () => {
 
     xAxis: {
       type: 'category',
-      data: [
-        'Ariyalur', 'Chennai', 'Coimbatore', 'Cuddalore',
-        'Dharmapuri', 'Dindigul', 'Erode',
-        'Kallakurichi', 'Karur', 'Madurai'
-      ],
+      data:districtProgessstate.map((item)=>{return (item.district)}),
       axisLabel: {
         color: textColor,
         rotate: 30
@@ -181,26 +185,33 @@ const Chart = () => {
       }
     },
 
-    series: [
-      {
-        name: 'Below',
+    // series: [
+    //   {
+    //     name: 'Below',
+    //     type: 'bar',
+    //     barWidth: 18,
+    //     data: [30, 40, 0, 30, 0, 40, 0, 10, 0, 20]
+    //   },
+    //   {
+    //     name: 'Average',
+    //     type: 'bar',
+    //     barWidth: 18,
+    //     data: [55, 0, 70, 0, 0, 0, 0, 0, 68, 0]
+    //   },
+    //   {
+    //     name: 'Good',
+    //     type: 'bar',
+    //     barWidth: 18,
+    //     data: [0, 0, 0, 0, 90, 0, 78, 0, 0, 0]
+    //   }
+    // ],
+
+    series:["Below","Average","Good"].map((item,index)=>{return({
+        name: item,
         type: 'bar',
         barWidth: 18,
-        data: [30, 40, 0, 30, 0, 40, 0, 10, 0, 20]
-      },
-      {
-        name: 'Average',
-        type: 'bar',
-        barWidth: 18,
-        data: [55, 0, 70, 0, 0, 0, 0, 0, 68, 0]
-      },
-      {
-        name: 'Good',
-        type: 'bar',
-        barWidth: 18,
-        data: [0, 0, 0, 0, 90, 0, 78, 0, 0, 0]
-      }
-    ],
+        data: districtProgessstate.map((item1)=>{return (item1[item.toLowerCase()])})
+      })}),
 
     backgroundColor: 'transparent'
   };
